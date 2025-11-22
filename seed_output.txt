@@ -1,0 +1,18 @@
+D:\work\Booking\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:239
+      config = optionsArg.__internal?.configOverride?.(config) ?? config
+                          ^
+
+
+TypeError: Cannot read properties of undefined (reading '__internal')
+    at new t (D:\work\Booking\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:239:27)
+    at <anonymous> (D:\work\Booking\prisma\seed.ts:4:16)
+    at Object.<anonymous> (D:\work\Booking\prisma\seed.ts:51:4)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object.transformer (D:\work\Booking\node_modules\tsx\dist\register-D46fvsV_.cjs:3:1104)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)
+    at cjsLoader (node:internal/modules/esm/translators:262:5)
+
+Node.js v22.14.0

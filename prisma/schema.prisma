@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String    @unique
+  password  String?
+  image     String?
+  role      String    @default("USER") // ADMIN, USER
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+}
+
+model Event {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  date        DateTime
+  location    String
+  imageUrl    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  ticketTypes TicketType[]
+}
+
+model TicketType {
+  id           String        @id @default(cuid())
+  name         String
+  price        Float
+  quantity     Int
+  eventId      String
+  event        Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookingItems BookingItem[]
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  totalAmount Float
+  status      String        @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt   DateTime      @default(now())
+  items       BookingItem[]
+}
+
+model BookingItem {
+  id           String     @id @default(cuid())
+  bookingId    String
+  booking      Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  ticketTypeId String
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+  quantity     Int
+}
+
+model Promotion {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  discountPercent Float
+  validUntil      DateTime
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+}
