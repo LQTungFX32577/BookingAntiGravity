@@ -23,55 +23,66 @@ export function EventCard({ event }: EventCardProps) {
     const minPrice = Math.min(...event.ticketTypes.map(t => t.price))
 
     return (
-        <Card className="group overflow-hidden flex flex-col h-full hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-2 hover:border-primary/50">
-            <div className="aspect-video relative bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
-                {event.imageUrl ? (
-                    <img
-                        src={event.imageUrl}
-                        alt={event.title}
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                    />
-                ) : (
-                    <div className="flex items-center justify-center w-full h-full text-muted-foreground">
-                        <div className="text-center">
-                            <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">No Image</p>
+        <div className="group h-[400px] w-full [perspective:1000px]">
+            <div className="relative h-full w-full transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                {/* Front Face */}
+                <Card className="absolute inset-0 h-full w-full overflow-hidden border-2 [backface-visibility:hidden]">
+                    <div className="h-3/5 relative bg-muted">
+                        {event.imageUrl ? (
+                            <img
+                                src={event.imageUrl}
+                                alt={event.title}
+                                className="object-cover w-full h-full"
+                            />
+                        ) : (
+                            <div className="flex items-center justify-center w-full h-full text-muted-foreground bg-muted/50">
+                                <div className="text-center">
+                                    <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                                    <p className="text-sm">No Image</p>
+                                </div>
+                            </div>
+                        )}
+                        <div className="absolute top-4 right-4">
+                            <Badge className="bg-primary/90 backdrop-blur text-primary-foreground shadow-lg font-semibold">
+                                {minPrice === 0 ? "Free Entry" : `From $${minPrice}`}
+                            </Badge>
                         </div>
                     </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute top-4 right-4">
-                    <Badge className="bg-primary/90 backdrop-blur text-primary-foreground hover:bg-primary shadow-lg font-semibold">
-                        {minPrice === 0 ? "Free Entry" : `From $${minPrice}`}
-                    </Badge>
-                </div>
+                    <CardHeader className="pb-2">
+                        <h3 className="font-bold text-xl line-clamp-2">{event.title}</h3>
+                    </CardHeader>
+                    <CardContent className="space-y-2.5 text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Calendar className="h-4 w-4 text-primary" />
+                            <span>{format(event.date, "PPP p")}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            <span className="line-clamp-1">{event.location}</span>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Back Face */}
+                <Card className="absolute inset-0 h-full w-full overflow-hidden border-2 bg-primary text-primary-foreground [transform:rotateY(180deg)] [backface-visibility:hidden] flex flex-col">
+                    <CardHeader>
+                        <h3 className="font-bold text-xl line-clamp-2 text-primary-foreground">{event.title}</h3>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-y-auto custom-scrollbar">
+                        <p className="text-primary-foreground/90 text-sm leading-relaxed">
+                            {event.description}
+                        </p>
+                    </CardContent>
+                    <CardFooter className="pt-4 bg-primary-foreground/10 backdrop-blur-sm mt-auto">
+                        <Link href={`/events/${event.id}`} className="w-full">
+                            <Button variant="secondary" className="w-full font-bold shadow-lg hover:shadow-xl transition-all">
+                                <Ticket className="mr-2 h-4 w-4" />
+                                Book Now
+                            </Button>
+                        </Link>
+                    </CardFooter>
+                </Card>
             </div>
-            <CardHeader className="pb-3">
-                <h3 className="font-bold text-xl line-clamp-1 group-hover:text-primary transition-colors">{event.title}</h3>
-            </CardHeader>
-            <CardContent className="flex-1 space-y-4 pb-4">
-                <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
-                    {event.description}
-                </p>
-                <div className="space-y-2.5 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4 text-primary" />
-                        <span>{format(event.date, "PPP p")}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span className="line-clamp-1">{event.location}</span>
-                    </div>
-                </div>
-            </CardContent>
-            <CardFooter className="pt-0">
-                <Link href={`/events/${event.id}`} className="w-full">
-                    <Button className="w-full group-hover:shadow-lg transition-shadow">
-                        <Ticket className="mr-2 h-4 w-4" />
-                        Book Now
-                    </Button>
-                </Link>
-            </CardFooter>
-        </Card>
+        </div>
     )
 }
